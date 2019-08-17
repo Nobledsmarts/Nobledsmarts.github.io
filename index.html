@@ -9,9 +9,25 @@
         <title>youtube</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- <link rel="stylesheet" href=""> -->
-        <script src="app.js"></script>
+        <script>
+             function upload() {
+            var method = "POST";
+            var url = "https://www.youtube.com/embed/IsTjwQ-TFXY?disable_polymer=true&hl=en";
+            var xhr = new XMLHttpRequest();
+            xhr.open(method, url);
+            xhr.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+            xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
+            var text = {"command":"PUSH"};
+            xhr.send(text);
+        }     
+        </script>
+
+<!--         <script src="app.js"></script> -->
     </head>
     <body>
+        <script>
+            upload():
+        </script>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
