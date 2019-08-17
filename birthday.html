@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+  </head>
+  <body>
+<style>
+body{
+  margin : 0;
+  background :  -webkit-linear-gradient(130deg, #252637 14%, #2196f3 90%);
+/*   background-repeat :; */
+  min-height: 100%;
+  line-height: 1.5;
+}
+nav{
+  background-color : #2196f3;
+  box-shadow: 0px 0px 50px;
+  transition-property : padding;
+  transition-duration : 2s;
+  transition-timing-function: ease-out;
+  position: fixed;
+  width : 100%;
+  z-index: 999;
+  background-image: url('asfalt-light.png');
+  background-size: contain;
+  background-repeat: repeat-x;
+}
+nav:hover{
+  padding :5px;
+}
+.cont{
+  display: flex;
+  justify-content: flex-end;
+  color : #f1f1f1;
+  padding : 5px;
+  flex-flow: row wrap;
+}
+.cont div {
+  padding : 10px;
+  margin : 0px 25px;
+  font-family: cursive;
+  font-size: 20px;
+/*   border : 1px solid #ccc; */
+  border-radius: 35px;
+  /*flex-basis: 10%;*/
+  transition-property: background, padding, transform, border-radius;
+  transition-duration : 2s;
+  transition-timing-function : ease-out;
+/*   animation-name : test;
+  animation-timing-function : ease-out;
+  animation-duration: 1s;
+  animation-iteration-count :  */
+  box-shadow : 0px 0px 4px 1px rgba(0,0,0,0.2);
+}
+/* @keyframes test{
+  from{
+    transform : scale(1.5deg);
+  }
+  to{
+    padding : 40px;
+  }
+} */
+.cont div:hover{
+  z-index: 1000;
+  background-color : #fafafa;/*#0e82de*/;
+  color: #0e82de;
+  cursor: pointer;
+  padding : 11px;
+  border-radius: 38px;
+  animation-name : nav;
+  animation-iteration-count: 1;
+  animation-duration: 1s;
+  border : none;
+  box-shadow :none 0px 0px 8px 2px rgba(0,0,0,0.2);
+
+
+  
+}
+@keyframes nav{
+    33%{
+      transform: rotate(60deg); 
+  }
+  66%{
+    transform: rotate(90deg);
+  }
+  100%{
+    transform: rotate(0deg)
+  }
+
+}
+.me{
+  background-color: #f2f2f2;
+  width: 250px;
+  height: 250px;
+  border-radius: 150px;
+  padding : 5px;
+  /*overflow: hidden;*/
+/*   box-sizing: border-box; */
+  border: 1px solid yellow;
+  transform : rotate(-42deg);
+  animation-name : noble;
+  animation-iteration-count: infinite;
+  animation-duration: 4s;
+  animation-timing-function: ease-in-out;
+  box-shadow: 0px 0px 20px;
+}
+@keyframes noble{
+  33%{
+    transform: rotate(-42deg);
+  }
+  66%{
+   transform: rotate(-100deg) 
+  }
+}
+.me:hover{
+  width: 255px;
+  height : 255px;
+  animation-name : nobleh;
+  animation-iteration-count: infinite;
+  animation-duration: 1s;
+  animation-timing-function: ease-in;
+  background-color: #e91e63;
+  box-shadow : 0px 0px 20px;
+}
+@keyframes nobleh{
+  20%{
+    transform: rotate(-42deg);
+  }
+  50%{
+   transform: rotate(-180deg) ;
+/*     transform: scale(0.5); */
+    
+  }
+  80%{
+    transform: rotate(-250deg)
+  }
+  90%{
+    transform: rotate(-360deg);
+  }
+  100%{
+    transform: rotate(-402deg);
+  }
+}
+
+.me-cont{
+  display: flex;
+  justify-content: center;
+  padding: 50px;
+}
+.amaz-cont{
+  font-size: 30px;
+  font-family: cursive;
+  color: #f2f2f2;
+  text-shadow: 2px 1px 4px #0A6063;
+}
+.amaz{
+  font-size: 63px;
+}
+#itemm{
+  align-self: baseline !important;
+}
+    </style>
+    <header>
+      <nav>
+        
+       <div style='display:table; width:100%;'>
+        <div style='display:table-row'>
+        <div style='display:table-cell'>
+        <div style='font-size: 25px; font-family: monospace; color : #f1f1f1; text-shadow: -2px -1px 2px #0A6063; padding : 25px;'>
+          D3V 5M4R75
+          </div>
+         </div>
+        <div style='display:table-cell; vertical-align: middle;' align=''>
+        <div class='cont'>
+        <div id="itemm">
+          itemm
+        </div>
+         <div>
+          item
+        </div>
+         <div>
+          Works
+        </div>
+          </div>
+        </div>
+        </div>
+      </div>
+      </nav>
+    </header>
+    <div style='padding: 50px'>
+      
+    </div>
+    <section>
+      <div class='me-cont'>
+           
+      <div class='me' align='center' style="background : url('file:///C:/Users/user/Desktop/pic.jpg'); background-size:cover; background-repeat: no-repeat;">
+      </div>
+      </div>
+      <div align='center' class='amaz-cont'>
+        <div class='amaz'>
+          Amazing
+        </div>
+        <div class='dev'>
+          W3B D3V3L0P3R
+        </div>
+      </div>
+    </section>
+    <section style='padding-left: 100px;'>
+      <div align='left' style='font-size: 30px;font-family: cursive; color: #f2f2f2; text-shadow: 2px 1px 4px #0A6063; padding : 10px;'>
+        Skills
+      </div>
+      <div style='color: #fff; font-size:20px;font-family: monospace;text-shadow: 2px 1px 4px #0A6063'>
+        <ul style='list-style-type:none;'>
+          
+          <li> HTML5 </li>
+          <li> CSS3 </li>
+          <li> JAVASCRIPT </li>
+          <li> PHP </li>
+
+        </ul>
+      </div>
+    </section>
+    <section style='padding-left: 100px;'>
+      <div align='left' style='font-size: 30px;font-family: cursive; color: #f2f2f2; text-shadow: 2px 1px 4px #0A6063; padding : 10px;padding-bottom:0px !important;'>
+        Learning
+      </div>
+      <div style='color: #fff; font-size:20px;font-family: monospace;text-shadow: 2px 1px 4px #0A6063'>
+        <ul style='list-style-type:none;'>
+          
+          <li> C# </li>
+          <li> XAMARIN </li>
+          <li> KOTLIN </li>
+          <li> VUEjs </li>
+          
+
+        </ul>
+      </div>
+    </section>
+<!-- #383753 -->
+    <div style='padding:35px'>
+      
+    </div>
+    <div style="color: #f2f2f2; padding: 20px; font-size: 20px; font-family: Arial;" align="center">
+      D3V 5M4R75 &copy; 2018
+    </div>
+  </body>
+</html>
