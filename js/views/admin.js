@@ -307,7 +307,6 @@ const adminView = {
                     </form>
                 </div>
             </div>
-            <div style="min-height:20vh"></div>
         </section>
     `
 }
