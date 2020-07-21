@@ -34,7 +34,7 @@ new Vue({
             db.create('products', {
                 id : {
                     type : 'Number',
-                    autoincrement : true
+                    key : true
                 },
                 name : {
                     type : 'String',
@@ -56,26 +56,14 @@ new Vue({
             db.create('cart', {
                 id : {
                     type : 'Number',
-                    autoincrement : true
+                    key : true
                 },
                 productId : {
-                    type : 'Number',
-                },
-                name : {
-                    type : 'String',
-                },
-                stock : {
-                    type : 'Number',
-                },
-                price : {
                     type : 'Number',
                 },
                 quantity : {
                     type : 'Number',
                 },
-                image : {
-                    type : 'String'
-                }
             });
         }
     }

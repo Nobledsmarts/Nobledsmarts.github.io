@@ -8,14 +8,18 @@ const cartView = {
         }
     },
     created(){
-        document.title = "simple Shopping - Cart";
+        document.title = "simple shopping - Cart";
         this.currentPage = Object.keys(this.$route.query).length ? this.$route.query.page : 1;
-        this.products = this.filter([... this.cart.reverse()]);
-        this.cart.reverse();
+        this.setProducts();
+        db.addEventListener('tabupdate', () => {
+            this.$store.commit('updateStore');
+            this.setProducts();
+        });
     },
     computed : {
         ...Vuex.mapGetters({
             getProducts : 'getProducts',
+            getProduct : 'getProduct',
             cart : 'cart',
             getModalMsg : 'modalMsg'
         }),
@@ -26,15 +30,17 @@ const cartView = {
         },
         '$route'(route){
             this.currentPage = route.query.page;
-            this.products = this.filter([... this.cart.reverse()]);
-            this.cart.reverse();
+            this.setProducts();
         }
     },
     methods : {
         ...Vuex.mapActions({
             getProduct : 'getProduct'
         }),
-        
+        setProducts(){
+            this.products = this.filter([... this.cart.reverse()]);
+            this.cart.reverse();
+        },
         dismissModal(){
             this.$store.dispatch('dismissModal', {
                 vm : this.$root
@@ -69,8 +75,7 @@ const cartView = {
                 this.products = this.filter([... products.reverse()]);
             } else {
                 this.isSearch = false;
-                this.products = this.filter([... this.cart.reverse()]);
-                this.cart.reverse();
+                this.setProducts();
             }
         },
         removeAll(){
@@ -89,7 +94,7 @@ const cartView = {
                 del && that.showModal('product has been deleted');
             } else {
                 let cart = db.select(['*']).from('cart');
-                    cart.forEach((productObj) => {
+                cart.forEach((productObj) => {
                     let del = db.delete('cart').where(['id', '=',  productObj.id])[0];
                     let product = (db.select(['*']).from('products').where(['productId', '=', productObj.productId]))[0];
                     db.update('products').where(['id', '=', del.productId]).values({
@@ -99,8 +104,7 @@ const cartView = {
                 });
                 that.showModal('products has been deleted');
             }
-            that.products = that.filter([... that.cart.reverse()]);
-            that.cart.reverse();
+            that.setProducts();
             window._that = undefined;
         },
         triggerCancel(){
@@ -129,7 +133,7 @@ const cartView = {
             </div>
             <div v-if="products.length" class="products-cont" align="center">
                 <div v-for="(product, i) in products" class="product-item">
-                <div class="product-img" :style="'background-image:url(' + product.image + ')'">
+                <div class="product-img" :style="'background-image:url(' + getProduct('products', product.productId).image + ')'">
                     <div align="right" class="row-pad">
                         <div class="stock-cont" title="quantity" align="right">
                             {{product.quantity}}
@@ -137,7 +141,7 @@ const cartView = {
                     </div>
                 </div>
                 <div class="row-pad">
-                    <strong> {{product.name}} </strong>
+                    <strong> {{getProduct('products', product.productId).name}} </strong>
                 </div>
                     total Price : <strong class="product-price">
                     {{product.price ? '$' + product.price * product.quantity : 'free'}}

@@ -288,7 +288,7 @@ nav .brand:hover{
     border: none;
 }
 
-.admin-post-product input[type='submit']{
+.admin-post-product input[type='submit'], .admin-post-product button{
     background: #2981ac;
     border: none;
     width: 100%;
@@ -297,10 +297,15 @@ nav .brand:hover{
     color: aliceblue;
     margin-top: 10px;
     transition: all 200ms;
+    /* display: flex; */
 }
-.admin-post-product input[type='submit']:hover{
+.admin-post-product input[type='submit']:hover, .admin-post-product button:hover{
     background: #1e6588;
     cursor: pointer;
+}
+.admin-post-product input[type='submit']:disabled, .admin-post-product button:disabled{
+    background: #02608d;
+    cursor: no-drop;
 }
 .form-row{
     margin: 10px 0px;
@@ -500,10 +505,36 @@ footer{
 .h-100{
     width: 100%;
 }
+.loader {
+  border: 3px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 3px solid #9e222234;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  -webkit-animation: spin .9s linear infinite; 
+  animation: spin .9s linear infinite;
+  vertical-align: middle;
+  margin: 0px 7px;
+}
 
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
 @media screen and (max-width: 631px){
+    .pagination{
+        flex-wrap: wrap;
+    }
+    .pagination .pagination-item{
+        margin: 4px 8px;
+    }
     .search-panel form{
         padding-bottom: 10px;
     }

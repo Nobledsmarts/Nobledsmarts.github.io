@@ -11,9 +11,9 @@ const store = new Vuex.Store({
         modalMsg : state => state.modalMsg,
         getProduct : state => {
             return (from, productId) => {
-                return state[from].find((product) => {
+                return state[from] ? state[from].find((product) => {
                     return product.id == productId;
-                });
+                }) : {};
             };
         },
         getIndex : state => {
@@ -30,7 +30,6 @@ const store = new Vuex.Store({
         updateStore(state){
             let products = db.select(['*']).from('products');
             let cart = db.select(['*']).from('cart');
-
             state.products = products;
             state.cart = cart;
         }

@@ -13,13 +13,17 @@ const adminView = {
             currentEditPid : "",
             searchInput : "",
             isSearch : false,
+            isLoading : false
         }
     },
     created(){
-        document.title = "simple Shopping - Admin";
+        document.title = "simple shopping - Admin";
         this.currentPage = Object.keys(this.$route.query).length ? this.$route.query.page : 1;
-        this.products = this.filter([... this.getProducts.reverse()]);
-        this.getProducts.reverse();
+        this.setProducts();
+        db.addEventListener('tabupdate', () => {
+            this.$store.commit('updateStore');
+            this.setProducts();
+        });
     },
     watch :{
         searchInput() {
@@ -27,8 +31,7 @@ const adminView = {
         },
         '$route'(route){
             this.currentPage = route.query.page ? route.query.page : 1;
-            this.products = this.filter([... this.getProducts]);
-            this.getProducts.reverse();
+            this.setProducts();
         }
     },
     computed : {
@@ -40,6 +43,10 @@ const adminView = {
         }),
     },
     methods : {
+        setProducts(){
+            this.products = this.filter([... this.getProducts.reverse()]);
+            this.getProducts.reverse();
+        },
         searchProduct(){
             event.preventDefault();
             if(this.searchInput){
@@ -49,8 +56,7 @@ const adminView = {
 
             } else {
                 this.isSearch = false;
-                this.products = this.filter([... this.getProducts.reverse()]);
-                this.getProducts.reverse();
+                this.setProducts();
             }
         },
         outOfStock(productIndex){
@@ -143,19 +149,22 @@ const adminView = {
                     this.showModal('stock cant be empty')
                     return;
                 }
-                let insert = db.insert('products', {
-                    name : this.newProductname,
-                    stock : Number(this.newProductstock),
-                    price : Number(this.newProductprice),
-                    quantity : Number(this.newProductquantity),
-                    image : this.newProductimage,
-                });
-                this.$store.commit('updateStore');
-                this.showModal('Product added');
-                this.products = this.filter([... this.getProducts.reverse()]);
-                this.getProducts.reverse();
-                this.resetData();
+                try{
+                    let insert = db.insert('products', {
+                        name : this.newProductname,
+                        stock : Number(this.newProductstock),
+                        price : Number(this.newProductprice),
+                        quantity : Number(this.newProductquantity),
+                        image : this.newProductimage,
+                    });
+                    this.$store.commit('updateStore');
+                    this.showModal('Product added');
+                    this.setProducts();
+                    this.resetData();
+                } catch(e){
+                    this.showModal('Uploading failed : ' + e.message);
                 }
+            }
         },
         resetData(){
             this.currentEditId = '';
@@ -167,16 +176,36 @@ const adminView = {
             this.newProductprice = 0;
         },
         setImagePath(){
-            let file = [event.currentTarget.files[0]];
+            this.isLoading = true;
+            const file = event.currentTarget.files[0];
+            const reader = new FileReader();
+            const REDUCE_RATIO = 0.1;
             let that = this;
-		    let reader = new FileReader();
-            reader.addEventListener('loadend', function(e){
-                let json = [reader.result];
-                new Blob(json).text().then((el) => {
-                    that.newProductimage = el;
-                })
+            reader.addEventListener('load', (event) => {
+                const image = new Image();
+                image.src = event.target.result;
+                setTimeout(() => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = image.naturalWidth;
+                    canvas.height = image.naturalHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(image, 0, 0);
+                    ctx.canvas.toBlob((blob) => {
+                        const newFile = new File([blob], file.name, {
+                            type : 'image/jpeg',
+                            lastModified : Date.now(),
+                        });
+                        const reader2 = new FileReader();
+                        reader2.readAsDataURL(newFile);
+                        reader2.addEventListener('loadend', (e) => {
+                            const newFileSrc = e.target.result;
+                            that.newProductimage = newFileSrc;
+                            that.isLoading = false;
+                        });
+                    }, 'image/jpeg', REDUCE_RATIO);
+                });
             });
-            reader.readAsDataURL(file[0]);
+            reader.readAsDataURL(file);
         },
         removeAll(){
             this.removeProduct(false, true)
@@ -190,11 +219,11 @@ const adminView = {
                 that.showModal('product has been deleted');
             } else {
                 let del = db.delete('products').all();
-                db.delete('products').all();
+                // db.delete('products').all();
                 del && db.delete('cart').all() && that.showModal('products has been deleted');
             }
             that.$store.commit('updateStore');
-            that.products = that.getProducts;
+            that.setProducts();
             window._that = undefined;
         },
         triggerCancel(){
@@ -302,7 +331,10 @@ const adminView = {
                         <input ref="productFile" v-on:change="setImagePath" type="file" value="" id="image" accept="image/*">
                     </div>
                     <div class="form-row">
-                        <input  type="submit" :value="isEdit ? 'Edit product' : 'post product'">
+                        <button :disabled="isLoading" type="submit">
+                            {{isEdit ? 'Edit product' : 'post product'}}
+                            <span v-if="isLoading" class="loader"></span>
+                        </button>
                     </div>
                     </form>
                 </div>

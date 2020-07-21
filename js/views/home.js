@@ -8,10 +8,13 @@ const homeView = {
         }
     },
     created(){
-        document.title = "simple Shopping - Home";
+        document.title = "simple shopping - Home";
         this.currentPage = Object.keys(this.$route.query).length ? this.$route.query.page : 1;
-        this.products = this.filter([... this.getProducts.reverse()]);
-        this.getProducts.reverse();
+        this.setProducts();
+        db.addEventListener('tabupdate', () => {
+            this.$store.commit('updateStore');
+            this.setProducts();
+        });
     },    
     watch :{
         searchInput() {
@@ -19,8 +22,7 @@ const homeView = {
         },
         '$route'(route){
             this.currentPage = route.query.page ? route.query.page : 1;
-            this.products = this.filter([... this.getProducts.reverse()]);
-            this.getProducts.reverse();
+            this.setProducts();
         }
     },
     computed : {
@@ -32,6 +34,10 @@ const homeView = {
         }),
     },
     methods : {
+        setProducts(){
+            this.products = this.filter([... this.getProducts.reverse()]);
+            this.getProducts.reverse();
+        },
         searchProducts(){
             event.preventDefault();
             if(this.searchInput){
@@ -40,8 +46,7 @@ const homeView = {
                 this.products = this.filter([... products.reverse()]);
             } else {
                 this.isSearch = false;
-                this.products = this.filter([... this.getProducts.reverse()]);
-                this.getProducts.reverse();
+                this.setProducts();
             }
         },
         outOfStock(productIndex){
@@ -58,26 +63,41 @@ const homeView = {
                     this.showModal('Quantity should not be greater than stock');
                     return;
                 }
-                if( !cartIsEmpty){
-                    product.productId = productId;
-                    product.quantity = Number(product.quantity);
-                    let result = db.insert('cart', product);
-                    if( result.lastInsertId ){
+                if(Number(product.quantity) < 1){
+                    this.showModal('Quantity should not be lesser than one');
+                    return;
+                }
+                if( !cartIsEmpty ){
+                    try{
+                        product.productId = productId;
+                        product.quantity = Number(product.quantity);
+                        let result = db.insert('cart', {
+                            productId : product.id,
+                            quantity : product.quantity
+                        });
+                        this.showModal('Item Added To Cart');
+                        if( result.lastInsertId ){
+                            db.update('products').where(['id', '=',  productId]).values({
+                                stock : product.stock - Number(product.quantity),
+                            });
+                            this.$store.commit('updateStore');
+                        }
+                    } catch(e) {
+                        this.showModal("Can't Add To Cart :  " + e.message);
+                    }
+                } else {
+                    try{
+                        db.update('cart').where(['productId', '=',  productId]).values({
+                            quantity : ((cart ? cart.quantity : 1) + Number(product.quantity)),
+                        });
                         db.update('products').where(['id', '=',  productId]).values({
                             stock : product.stock - Number(product.quantity),
                         });
                         this.showModal('Item Added To Cart');
                         this.$store.commit('updateStore');
+                    } catch(e) {
+                        this.showModal("Can't Add To Cart :  " + e.message);
                     }
-                } else {
-                    db.update('cart').where(['productId', '=',  productId]).values({
-                        quantity : ((cart ? cart.quantity : 1) + Number(product.quantity)),
-                    });
-                    db.update('products').where(['id', '=',  productId]).values({
-                        stock : product.stock - Number(product.quantity),
-                    });
-                    this.showModal('Item Added To Cart');
-                    this.$store.commit('updateStore');
                 }
             } else {
                 this.showModal('Invalid product');
